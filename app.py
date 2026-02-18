@@ -113,7 +113,7 @@ COMMON_AGES = [
 ]
 
 
-def to_months(age_value: int, unit: str) -> int:
+def to_months(age_value: float, unit: str) -> int:
     if unit == "years":
         return int(round(age_value * 12))
     return int(round(age_value))
