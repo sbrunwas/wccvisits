@@ -150,7 +150,7 @@ def main() -> None:
         "Follow CDC/CDPH/AAP guidance for actual clinical decisions."
     )
 
-    age_value = st.number_input("Age", min_value=0.0, step=1.0, value=0.0)
+    age_value = st.number_input("Age", min_value=0, step=1, value=0, format="%d")
     unit = st.selectbox("Unit", options=["months", "years"])
     include_ongoing = st.checkbox("Include ongoing/seasonal vaccines", value=True)
 
