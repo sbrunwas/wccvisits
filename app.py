@@ -5,96 +5,170 @@ import streamlit as st
 
 
 @dataclass(frozen=True)
+class VaccineInfo:
+    disease_name: str
+    vis_url: str
+
+
+@dataclass(frozen=True)
 class VisitInfo:
     label: str
-    vaccines: List[str]
+    vaccines: List[VaccineInfo]
+
+
+VACCINES: Dict[str, VaccineInfo] = {
+    "hepb": VaccineInfo(
+        disease_name="Hepatitis B",
+        vis_url="https://www.cdc.gov/vaccines/hcp/vis/vis-statements/hep-b.html",
+    ),
+    "rsv": VaccineInfo(
+        disease_name="Respiratory Syncytial Virus (RSV)",
+        vis_url="https://www.cdc.gov/vaccines/hcp/vis/vis-statements/rsv-immunization-infants.html",
+    ),
+    "dtap": VaccineInfo(
+        disease_name="Diphtheria, Tetanus, and Pertussis",
+        vis_url="https://www.cdc.gov/vaccines/hcp/vis/vis-statements/dtap.html",
+    ),
+    "ipv": VaccineInfo(
+        disease_name="Polio",
+        vis_url="https://www.cdc.gov/vaccines/hcp/vis/vis-statements/ipv.html",
+    ),
+    "hib": VaccineInfo(
+        disease_name="Haemophilus influenzae type b (Hib)",
+        vis_url="https://www.cdc.gov/vaccines/hcp/vis/vis-statements/hib.html",
+    ),
+    "pcv": VaccineInfo(
+        disease_name="Pneumococcal Disease",
+        vis_url="https://www.cdc.gov/vaccines/hcp/vis/vis-statements/pcv.html",
+    ),
+    "rv": VaccineInfo(
+        disease_name="Rotavirus",
+        vis_url="https://www.cdc.gov/vaccines/hcp/vis/vis-statements/rotavirus.html",
+    ),
+    "hepa": VaccineInfo(
+        disease_name="Hepatitis A",
+        vis_url="https://www.cdc.gov/vaccines/hcp/vis/vis-statements/hep-a.html",
+    ),
+    "mmr": VaccineInfo(
+        disease_name="Measles, Mumps, and Rubella",
+        vis_url="https://www.cdc.gov/vaccines/hcp/vis/vis-statements/mmr.html",
+    ),
+    "varicella": VaccineInfo(
+        disease_name="Chickenpox (Varicella)",
+        vis_url="https://www.cdc.gov/vaccines/hcp/vis/vis-statements/varicella.html",
+    ),
+    "hpv": VaccineInfo(
+        disease_name="Human Papillomavirus (HPV)",
+        vis_url="https://www.cdc.gov/vaccines/hcp/vis/vis-statements/hpv.html",
+    ),
+    "menacwy": VaccineInfo(
+        disease_name="Meningococcal ACWY",
+        vis_url="https://www.cdc.gov/vaccines/hcp/vis/vis-statements/mening.html",
+    ),
+    "tdap": VaccineInfo(
+        disease_name="Tetanus, Diphtheria, and Pertussis (Tdap)",
+        vis_url="https://www.cdc.gov/vaccines/hcp/vis/vis-statements/tdap.html",
+    ),
+    "menb": VaccineInfo(
+        disease_name="Meningococcal B",
+        vis_url="https://www.cdc.gov/vaccines/hcp/vis/vis-statements/mening-serogroup.html",
+    ),
+    "covid19": VaccineInfo(
+        disease_name="COVID-19",
+        vis_url="https://www.cdc.gov/vaccines/hcp/vis/vis-statements/covid-19.html",
+    ),
+    "flu": VaccineInfo(
+        disease_name="Influenza (Flu)",
+        vis_url="https://www.cdc.gov/vaccines/hcp/vis/vis-statements/flu.html",
+    ),
+}
 
 
 VISIT_SCHEDULE: Dict[str, VisitInfo] = {
     "birth": VisitInfo(
         label="Birth (0 months)",
         vaccines=[
-            "HepB",
-            "RSV (0–8 months eligibility dependent)",
+            VACCINES["hepb"],
+            VACCINES["rsv"],
         ],
     ),
     "2_months": VisitInfo(
         label="2 months",
         vaccines=[
-            "DTaP",
-            "Polio (IPV)",
-            "HepB",
-            "Hib",
-            "PCV",
-            "RV (Rotavirus)",
+            VACCINES["dtap"],
+            VACCINES["ipv"],
+            VACCINES["hepb"],
+            VACCINES["hib"],
+            VACCINES["pcv"],
+            VACCINES["rv"],
         ],
     ),
     "4_months": VisitInfo(
         label="4 months",
         vaccines=[
-            "DTaP",
-            "Polio (IPV)",
-            "HepB (if 1st dose given at 2 months)",
-            "Hib",
-            "PCV",
-            "RV",
+            VACCINES["dtap"],
+            VACCINES["ipv"],
+            VACCINES["hepb"],
+            VACCINES["hib"],
+            VACCINES["pcv"],
+            VACCINES["rv"],
         ],
     ),
     "6_months": VisitInfo(
         label="6 months",
         vaccines=[
-            "DTaP",
-            "Polio (IPV) (age 6–18 months)",
-            "HepB (age 6–18 months; final dose rules)",
-            "Hib",
-            "PCV",
-            "RV (if RotaTeq used / 3-dose series)",
+            VACCINES["dtap"],
+            VACCINES["ipv"],
+            VACCINES["hepb"],
+            VACCINES["hib"],
+            VACCINES["pcv"],
+            VACCINES["rv"],
         ],
     ),
     "12_months": VisitInfo(
         label="12 months",
         vaccines=[
-            "HepA (start age 12–23 months)",
-            "MMR (12–15 months)",
-            "Var (Varicella) (12–15 months)",
-            "Hib (12–15 months)",
-            "PCV (12–15 months)",
+            VACCINES["hepa"],
+            VACCINES["mmr"],
+            VACCINES["varicella"],
+            VACCINES["hib"],
+            VACCINES["pcv"],
         ],
     ),
     "15_months": VisitInfo(
         label="15 months",
         vaccines=[
-            "DTaP (15–18 months)",
+            VACCINES["dtap"],
         ],
     ),
     "18_months": VisitInfo(
         label="18 months",
         vaccines=[
-            "HepA (2nd dose 6–18 months after 1st)",
+            VACCINES["hepa"],
         ],
     ),
     "4_6_years": VisitInfo(
         label="4–6 years (48–72 months)",
         vaccines=[
-            "DTaP",
-            "Polio (IPV)",
-            "MMR",
-            "Varicella",
+            VACCINES["dtap"],
+            VACCINES["ipv"],
+            VACCINES["mmr"],
+            VACCINES["varicella"],
         ],
     ),
     "11_12_years": VisitInfo(
         label="11–12 years (132–144 months)",
         vaccines=[
-            "HPV (2 doses; can start at age 9)",
-            "MenACWY (MCV4)",
-            "Tdap",
+            VACCINES["hpv"],
+            VACCINES["menacwy"],
+            VACCINES["tdap"],
         ],
     ),
     "16_years": VisitInfo(
         label="16 years (192 months)",
         vaccines=[
-            "MenACWY (MCV4) booster",
-            "MenB (optional/indication/shared decision)",
+            VACCINES["menacwy"],
+            VACCINES["menb"],
         ],
     ),
 }
@@ -143,6 +217,10 @@ def get_visit_key(age_months: int) -> Optional[str]:
     return None
 
 
+def render_vaccine(vaccine: VaccineInfo) -> None:
+    st.markdown(f"- {vaccine.disease_name} ([CDC VIS]({vaccine.vis_url}))")
+
+
 def main() -> None:
     st.title("Well-Child Vaccine Timing (CA 2025)")
     st.caption(
@@ -168,11 +246,11 @@ def main() -> None:
     visit = VISIT_SCHEDULE[visit_key]
     st.subheader(f"Vaccines due at this visit: {visit.label}")
     for vaccine in visit.vaccines:
-        st.markdown(f"- {vaccine}")
+        render_vaccine(vaccine)
 
     if include_ongoing and age_months >= 6:
-        st.markdown("- COVID-19 vaccine(s)")
-        st.markdown("- Flu vaccine every fall")
+        render_vaccine(VACCINES["covid19"])
+        render_vaccine(VACCINES["flu"])
 
 
 if __name__ == "__main__":
