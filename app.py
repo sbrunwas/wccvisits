@@ -248,6 +248,10 @@ def inject_styles() -> None:
                 color: #0f172a;
             }
 
+            h1, h2, h3, [data-testid="stMarkdownContainer"] p, label {
+                font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+            }
+
             .block-container {
                 padding-top: 1rem;
                 padding-bottom: 2rem;
@@ -307,6 +311,11 @@ def inject_styles() -> None:
                 margin-bottom: 0.65rem;
             }
 
+            .stAlert {
+                border-radius: 0.9rem;
+                border: 1px solid #e2e8f0;
+            }
+
             .metric-title {
                 color: #64748b;
                 font-size: 0.75rem;
@@ -349,23 +358,22 @@ def inject_styles() -> None:
         """,
         unsafe_allow_html=True,
     )
+    st.caption("Not medical advice. Follow CDC/CDPH/AAP guidance for clinical decisions.")
 
 
 def main() -> None:
     inject_styles()
 
-    st.markdown(
-        """
-        <div class="top-nav">
-            <div>
-                <p class="top-nav-title">Well-Child Vaccine Timing</p>
-                <p class="top-nav-subtitle">California 2025 · Educational reference</p>
-            </div>
-            <span class="status-badge">SERENE PRECISION</span>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    header_col, badge_col = st.columns([3.2, 1.0])
+    with header_col:
+        st.title("Well-Child Vaccine Timing")
+        st.markdown(
+            '<p class="top-nav-subtitle">California 2025 · Educational reference</p>',
+            unsafe_allow_html=True,
+        )
+    with badge_col:
+        st.markdown('<span class="status-badge">Serene Precision</span>', unsafe_allow_html=True)
+
     st.caption("Not medical advice. Follow CDC/CDPH/AAP guidance for clinical decisions.")
 
     st.markdown('<div class="section-title">Choose patient age</div>', unsafe_allow_html=True)
