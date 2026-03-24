@@ -218,19 +218,132 @@ def get_visit_key(age_months: int) -> Optional[str]:
 
 
 def render_vaccine(vaccine: VaccineInfo) -> None:
-    st.markdown(f"- {vaccine.disease_name} ([CDC VIS]({vaccine.vis_url}))")
+    st.markdown(
+        f"""
+        <div class="vaccine-card">
+            <div class="vaccine-title">{vaccine.disease_name}</div>
+            <a class="vaccine-link" href="{vaccine.vis_url}" target="_blank">Read CDC VIS ↗</a>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def inject_styles() -> None:
+    st.markdown(
+        """
+        <style>
+            .stApp {
+                background:
+                    radial-gradient(circle at 15% 20%, rgba(246, 252, 255, 0.95) 0%, rgba(246, 252, 255, 0) 45%),
+                    radial-gradient(circle at 80% 5%, rgba(255, 245, 249, 0.9) 0%, rgba(255, 245, 249, 0) 40%),
+                    linear-gradient(180deg, #f7fbff 0%, #f5f9f7 100%);
+                color: #243042;
+            }
+
+            .block-container {
+                padding-top: 2rem;
+                padding-bottom: 2rem;
+                max-width: 850px;
+            }
+
+            .hero {
+                background: rgba(255, 255, 255, 0.76);
+                border: 1px solid rgba(164, 191, 215, 0.35);
+                box-shadow: 0 20px 45px rgba(85, 110, 140, 0.12);
+                border-radius: 24px;
+                padding: 1.25rem 1.5rem;
+                margin: 0.3rem 0 1.15rem 0;
+                backdrop-filter: blur(6px);
+            }
+
+            .hero h1 {
+                margin: 0 0 0.4rem 0;
+                color: #1f3a62;
+                font-weight: 700;
+                letter-spacing: 0.01em;
+                font-size: 1.95rem;
+            }
+
+            .hero p {
+                margin: 0;
+                color: #435a78;
+            }
+
+            .section-title {
+                margin-top: 0.35rem;
+                color: #2f4865;
+                font-weight: 600;
+                font-size: 1.05rem;
+                letter-spacing: 0.02em;
+                text-transform: uppercase;
+            }
+
+            div[data-baseweb="input"] input,
+            div[data-baseweb="select"] > div {
+                border-radius: 14px !important;
+                border: 1px solid rgba(141, 169, 199, 0.55) !important;
+                background: rgba(255, 255, 255, 0.85) !important;
+            }
+
+            .vaccine-card {
+                background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+                border: 1px solid rgba(151, 178, 205, 0.45);
+                border-radius: 16px;
+                box-shadow: 0 10px 24px rgba(86, 112, 143, 0.08);
+                padding: 0.85rem 1rem;
+                margin-bottom: 0.65rem;
+            }
+
+            .vaccine-title {
+                font-size: 1.03rem;
+                color: #28425e;
+                font-weight: 600;
+                margin-bottom: 0.2rem;
+            }
+
+            .vaccine-link {
+                color: #486f9f !important;
+                text-decoration: none;
+                font-size: 0.92rem;
+                font-weight: 500;
+            }
+
+            .vaccine-link:hover {
+                color: #2f5d94 !important;
+                text-decoration: underline;
+            }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 def main() -> None:
-    st.title("Well-Child Vaccine Timing (CA 2025)")
-    st.caption(
-        "Prototype for educational use only. Not medical advice. "
-        "Follow CDC/CDPH/AAP guidance for actual clinical decisions."
-    )
+    inject_styles()
 
-    age_value = st.number_input("Age", min_value=0, step=1, value=0, format="%d")
-    unit = st.selectbox("Unit", options=["months", "years"])
-    include_ongoing = st.checkbox("Include ongoing/seasonal vaccines", value=True)
+    st.markdown(
+        """
+        <section class="hero">
+            <h1>Well-Child Vaccine Timing</h1>
+            <p>California 2025 · Educational reference tool for routine visit guidance.</p>
+        </section>
+        """,
+        unsafe_allow_html=True,
+    )
+    st.caption("Not medical advice. Follow CDC/CDPH/AAP guidance for clinical decisions.")
+
+    st.markdown('<div class="section-title">Choose patient age</div>', unsafe_allow_html=True)
+    control_col, spacer_col = st.columns([2.2, 1.0])
+    with control_col:
+        input_col, unit_col = st.columns([1.1, 1.0])
+        with input_col:
+            age_value = st.number_input("Age", min_value=0, step=1, value=0, format="%d")
+        with unit_col:
+            unit = st.selectbox("Unit", options=["months", "years"])
+        include_ongoing = st.checkbox("Include ongoing/seasonal vaccines", value=True)
+    with spacer_col:
+        st.info("Tip: try exact well-child ages for routine schedule matches.")
 
     age_months = to_months(age_value, unit)
     visit_key = get_visit_key(age_months)
@@ -244,11 +357,15 @@ def main() -> None:
         return
 
     visit = VISIT_SCHEDULE[visit_key]
-    st.subheader(f"Vaccines due at this visit: {visit.label}")
+    st.markdown(
+        f'<div class="section-title">Vaccines due · {visit.label}</div>',
+        unsafe_allow_html=True,
+    )
     for vaccine in visit.vaccines:
         render_vaccine(vaccine)
 
     if include_ongoing and age_months >= 6:
+        st.markdown('<div class="section-title">Ongoing / seasonal</div>', unsafe_allow_html=True)
         render_vaccine(VACCINES["covid19"])
         render_vaccine(VACCINES["flu"])
 
