@@ -358,6 +358,7 @@ def inject_styles() -> None:
         """,
         unsafe_allow_html=True,
     )
+    st.caption("Not medical advice. Follow CDC/CDPH/AAP guidance for clinical decisions.")
 
 
 def main() -> None:
