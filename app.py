@@ -220,9 +220,16 @@ def get_visit_key(age_months: int) -> Optional[str]:
 def render_vaccine(vaccine: VaccineInfo) -> None:
     st.markdown(
         f"""
-        <div class="vaccine-card">
+        <div class="metric-card vaccine-card">
+            <div class="metric-title">Vaccine</div>
             <div class="vaccine-title">{vaccine.disease_name}</div>
-            <a class="vaccine-link" href="{vaccine.vis_url}" target="_blank">Read CDC VIS ↗</a>
+            <a
+                class="vaccine-link"
+                href="{vaccine.vis_url}"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Open CDC VIS statement for {vaccine.disease_name}"
+            >Read CDC VIS ↗</a>
         </div>
         """,
         unsafe_allow_html=True,
@@ -233,85 +240,110 @@ def inject_styles() -> None:
     st.markdown(
         """
         <style>
+            @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap');
+
             .stApp {
-                background:
-                    radial-gradient(circle at 15% 20%, rgba(246, 252, 255, 0.95) 0%, rgba(246, 252, 255, 0) 45%),
-                    radial-gradient(circle at 80% 5%, rgba(255, 245, 249, 0.9) 0%, rgba(255, 245, 249, 0) 40%),
-                    linear-gradient(180deg, #f7fbff 0%, #f5f9f7 100%);
-                color: #243042;
+                background-color: #f8fafc;
+                font-family: 'Manrope', sans-serif;
+                color: #0f172a;
             }
 
             .block-container {
-                padding-top: 2rem;
+                padding-top: 1rem;
                 padding-bottom: 2rem;
-                max-width: 850px;
+                max-width: 950px;
             }
 
-            .hero {
-                background: rgba(255, 255, 255, 0.76);
-                border: 1px solid rgba(164, 191, 215, 0.35);
-                box-shadow: 0 20px 45px rgba(85, 110, 140, 0.12);
-                border-radius: 24px;
-                padding: 1.25rem 1.5rem;
-                margin: 0.3rem 0 1.15rem 0;
-                backdrop-filter: blur(6px);
+            .top-nav {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0.85rem 1.25rem;
+                background: rgba(248, 250, 252, 0.84);
+                backdrop-filter: blur(10px);
+                border: 1px solid #e2e8f0;
+                border-radius: 1rem;
+                position: sticky;
+                top: 0.5rem;
+                z-index: 1000;
+                margin-bottom: 1rem;
             }
 
-            .hero h1 {
-                margin: 0 0 0.4rem 0;
-                color: #1f3a62;
-                font-weight: 700;
-                letter-spacing: 0.01em;
-                font-size: 1.95rem;
-            }
-
-            .hero p {
+            .top-nav-title {
                 margin: 0;
-                color: #435a78;
+                font-size: 1.1rem;
+                font-weight: 700;
+                color: #0f172a;
+            }
+
+            .top-nav-subtitle {
+                margin: 0;
+                color: #64748b;
+                font-size: 0.78rem;
             }
 
             .section-title {
                 margin-top: 0.35rem;
-                color: #2f4865;
+                color: #475569;
                 font-weight: 600;
-                font-size: 1.05rem;
-                letter-spacing: 0.02em;
+                font-size: 0.84rem;
+                letter-spacing: 0.025em;
                 text-transform: uppercase;
             }
 
             div[data-baseweb="input"] input,
             div[data-baseweb="select"] > div {
-                border-radius: 14px !important;
-                border: 1px solid rgba(141, 169, 199, 0.55) !important;
-                background: rgba(255, 255, 255, 0.85) !important;
+                border-radius: 0.8rem !important;
+                border: 1px solid #e2e8f0 !important;
+                background: #ffffff !important;
             }
 
-            .vaccine-card {
-                background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
-                border: 1px solid rgba(151, 178, 205, 0.45);
-                border-radius: 16px;
-                box-shadow: 0 10px 24px rgba(86, 112, 143, 0.08);
-                padding: 0.85rem 1rem;
+            .metric-card {
+                background: white;
+                padding: 1.05rem;
+                border-radius: 1rem;
+                box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.08);
+                border: 1px solid #f1f5f9;
                 margin-bottom: 0.65rem;
+            }
+
+            .metric-title {
+                color: #64748b;
+                font-size: 0.75rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.025em;
+                margin-bottom: 0.35rem;
             }
 
             .vaccine-title {
                 font-size: 1.03rem;
-                color: #28425e;
+                color: #0f172a;
                 font-weight: 600;
-                margin-bottom: 0.2rem;
+                margin-bottom: 0.35rem;
             }
 
             .vaccine-link {
-                color: #486f9f !important;
+                color: #1e40af !important;
                 text-decoration: none;
                 font-size: 0.92rem;
                 font-weight: 500;
             }
 
             .vaccine-link:hover {
-                color: #2f5d94 !important;
+                color: #1d4ed8 !important;
                 text-decoration: underline;
+            }
+
+            .status-badge {
+                display: inline-flex;
+                align-items: center;
+                padding: 0.25rem 0.75rem;
+                border-radius: 9999px;
+                font-size: 0.75rem;
+                font-weight: 600;
+                background-color: #eff6ff;
+                color: #1e40af;
             }
         </style>
         """,
@@ -324,10 +356,13 @@ def main() -> None:
 
     st.markdown(
         """
-        <section class="hero">
-            <h1>Well-Child Vaccine Timing</h1>
-            <p>California 2025 · Educational reference tool for routine visit guidance.</p>
-        </section>
+        <div class="top-nav">
+            <div>
+                <p class="top-nav-title">Well-Child Vaccine Timing</p>
+                <p class="top-nav-subtitle">California 2025 · Educational reference</p>
+            </div>
+            <span class="status-badge">SERENE PRECISION</span>
+        </div>
         """,
         unsafe_allow_html=True,
     )
